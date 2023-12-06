@@ -1798,3 +1798,7 @@ SELECT TOP(2) [p].[ProfileId], [p].[ContactNumber], [p].[FirstName], [p].[JobTit
 FROM [Profiles] AS [p]
 WHERE [p].[ProfileId] = @__key_0
 2023-12-01 12:58:04,846 [.NET ThreadPool Worker] ERROR TimeSheetHrEmployeeApp.Controllers.ProfileController.UpdateProfile[63] - Profile update failed
+2023-12-03 22:07:28,517 [1] INFO Microsoft.Hosting.Lifetime.?[?] - Now listening on: http://localhost:5191
+2023-12-03 22:07:28,735 [1] INFO Microsoft.Hosting.Lifetime.OnApplicationStarted[0] - Application started. Press Ctrl+C to shut down.
+2023-12-03 22:07:28,742 [1] INFO Microsoft.Hosting.Lifetime.OnApplicationStarted[0] - Hosting environment: Development
+2023-12-03 22:07:28,744 [1] INFO Microsoft.Hosting.Lifetime.OnApplicationStarted[0] - Content root path: D:\TSSolution\TimeSheetHrEmployeeSolution\TimeSheetHrEmployeeApp\
