@@ -1,4 +1,5 @@
-﻿using TimeSheetHrEmployeeApp.Interface;
+﻿using TimeSheetHrEmployeeApp.Exceptions;
+using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
 using TimeSheetHrEmployeeApp.Repositories;
 
@@ -26,7 +27,7 @@ namespace TimeSheetHrEmployeeApp.Services
                 Period = timeSheet.Period,
                 HoursWorked = timeSheet.HoursWorked,
                 OverTime = timeSheet.OverTime,
-                Comments =  timeSheet.Comments
+                Comments = timeSheet.Comments
             };
             var result = _TimesheetRepository.Add(timeSheet);
             if (timeSheet != null)
@@ -42,40 +43,44 @@ namespace TimeSheetHrEmployeeApp.Services
         /// <param name="username"></param>
         /// <returns></returns>
 
-        public IList<TimeSheet> GetAllTimeSheets(string username)
+        public TimeSheet GetAllTimeSheets(string username)
         {
-            var user = _TimesheetRepository.GetAll().Where(u => u.Username == username).ToList();
+            var user = _TimesheetRepository.GetAll().FirstOrDefault(u => u.Username == username);
+
             if (user != null)
             {
                 return user;
             }
-            return null;
+
+            throw new NoTimeSheetAvaliableException();
         }
+
+
         /// <summary>
         /// updating the timeshhet
         /// </summary>
         /// <param name="id"></param>
         /// <param name="timeSheet"></param>
         /// <returns></returns>
-        public TimeSheet UpdateTimeSheet(int id,TimeSheet timeSheet)
+        public TimeSheet UpdateTimeSheet(TimeSheet timeSheet)
         {
-           
-            
-                var existingTimeSheet = _TimesheetRepository.GetById(id);
-                if (existingTimeSheet != null)
-                {
-                    existingTimeSheet.Username = timeSheet.Username;
-                    existingTimeSheet.Period = timeSheet.Period;
-                    existingTimeSheet.HoursWorked = timeSheet.HoursWorked;
-                    existingTimeSheet.OverTime = timeSheet.OverTime;
-                    existingTimeSheet.Comments = timeSheet.Comments;
 
-                    var result = _TimesheetRepository.Update(timeSheet);
-                    return result;
-                }
-            
 
-            return null;
+            var existingTimeSheet = _TimesheetRepository.GetById(timeSheet.TimesheetID);
+            if (existingTimeSheet != null)
+            {
+                existingTimeSheet.Username = timeSheet.Username;
+                existingTimeSheet.Period = timeSheet.Period;
+                existingTimeSheet.HoursWorked = timeSheet.HoursWorked;
+                existingTimeSheet.OverTime = timeSheet.OverTime;
+                existingTimeSheet.Comments = timeSheet.Comments;
+
+                var result = _TimesheetRepository.Update(timeSheet);
+                return result;
+            }
+
+
+            throw new NoTimeSheetAvaliableException();
         }
     }
 }

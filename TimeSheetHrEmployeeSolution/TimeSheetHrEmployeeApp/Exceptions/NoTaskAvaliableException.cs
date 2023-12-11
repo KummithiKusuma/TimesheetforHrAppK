@@ -5,7 +5,7 @@
         string message;
         public NoTaskAvaliableException()
         {
-            message = "No such profile found";
+            message = "No such Task found";
         }
         public override string Message => message;
     }

@@ -1,10 +1,11 @@
-﻿using TimeSheetHrEmployeeApp.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using TimeSheetHrEmployeeApp.Context;
 using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
 
 namespace TimeSheetHrEmployeeApp.Repositories
 {
-    public class ProfileRepository : IRepository<int,Profile>
+    public class ProfileRepository : IRepository<int, Profile>
     {
         private readonly TimeSheetHrEmployeeContext _context;
 
@@ -34,6 +35,8 @@ namespace TimeSheetHrEmployeeApp.Repositories
 
         public IList<Profile> GetAll()
         {
+            if (_context.Profiles.Count() == 0)
+                return null;
             return _context.Profiles.ToList();
         }
 
@@ -48,7 +51,7 @@ namespace TimeSheetHrEmployeeApp.Repositories
             var existingProfile = GetById(entity.ProfileId);
             if (existingProfile != null)
             {
-                _context.Entry(existingProfile).CurrentValues.SetValues(entity);
+                _context.Entry<Profile>(existingProfile).State = EntityState.Modified;
                 _context.SaveChanges();
                 return existingProfile;
             }
@@ -56,4 +59,3 @@ namespace TimeSheetHrEmployeeApp.Repositories
         }
     }
 }
-

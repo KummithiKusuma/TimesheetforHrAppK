@@ -1,4 +1,5 @@
 ﻿using log4net.Repository.Hierarchy;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
 using TimeSheetHrEmployeeApp.Models.DTO;
+using TimeSheetHrEmployeeApp.Services;
 
 namespace TimeSheetHrEmployeeApp.Controllers
 {
@@ -50,9 +52,9 @@ namespace TimeSheetHrEmployeeApp.Controllers
         /// <returns></returns>
 
         [HttpPut]
-        public IActionResult UpdateProfile(int id, ProfileDTO profileDTO)
+        public IActionResult UpdateProfile(ProfileDTO profileDTO)
         {
-            var updatedProfile = _profileService.UpdateProfile(id,profileDTO);
+            var updatedProfile = _profileService.UpdateProfile(profileDTO);
 
             if (updatedProfile != null)
             {
@@ -69,10 +71,10 @@ namespace TimeSheetHrEmployeeApp.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("DeleteProfile")]
-        public IActionResult DeleteProfile(int id)
-        { 
-            var result = _profileService.DeleteProfile(id);
-            if(result)
+        public IActionResult DeleteProfile(string username)
+        {
+            var result = _profileService.DeleteProfile(username);
+            if (result)
             {
                 _logger.LogInformation("Delete Profile");
                 return Ok("profile is deleted");
@@ -81,5 +83,18 @@ namespace TimeSheetHrEmployeeApp.Controllers
             return BadRequest("not delete");
         }
 
+        [HttpGet]
+        public ActionResult GetUserProfile(string Username)
+        {
+            var result = _profileService.GetUserProfile(Username);
+            if (result != null)
+            {
+                _logger.LogInformation("Get user profile");
+                return Ok(result);
+            }
+
+            _logger.LogError("failed to get profile");
+            return BadRequest("No profile found");
+        }
     }
 }

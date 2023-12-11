@@ -14,7 +14,7 @@ namespace TimeSheetHrEmployeeApp.Repositories
             _context = context;
         }
 
-       
+
         public Approval Add(Approval entity)
         {
             _context.Approvals.Add(entity);
@@ -35,6 +35,9 @@ namespace TimeSheetHrEmployeeApp.Repositories
 
         public IList<Approval> GetAll()
         {
+            if (_context.Approvals.Count() == 0)
+                return null;
+
             return _context.Approvals.ToList();
         }
 

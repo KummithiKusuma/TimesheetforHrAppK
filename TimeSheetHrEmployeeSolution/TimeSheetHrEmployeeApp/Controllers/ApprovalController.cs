@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +25,10 @@ namespace TimeSheetHrEmployeeApp.Controllers
         /// </summary>
         /// <param name="approval"></param>
         /// <returns></returns>
-
-        [Authorize(Roles ="Hr")]
         [HttpPost]
-        public ActionResult AddApproval(Approval approval)
+        [Authorize(Roles = "HR")]
+
+        public IActionResult AddApproval(Approval approval)
         {
             var result = _approvalService.AddApproval(approval);
             if (result)
@@ -45,9 +44,9 @@ namespace TimeSheetHrEmployeeApp.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult Get(int timesheetid)
         {
-            var result = _approvalService.GetAllApprovals();
+            var result = _approvalService.GetAllApprovals(timesheetid);
             if (result != null)
             {
                 _logger.LogInformation("Get all approvals");
