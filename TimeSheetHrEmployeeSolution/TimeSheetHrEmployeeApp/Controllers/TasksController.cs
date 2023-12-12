@@ -48,8 +48,9 @@ namespace TimeSheetHrEmployeeApp.Controllers
         /// </summary>
         /// <param name="tasks"></param>
         /// <returns></returns>
-       
+
         [HttpPost]
+        [Authorize(Roles = "HR")]
         public ActionResult Create(Tasks tasks)
         {
             string errorMessage = string.Empty;

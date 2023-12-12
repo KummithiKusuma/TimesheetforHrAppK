@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 
 namespace TimeSheetHrEmployeeApp.Services
-{ 
+{
     public class TokenService : ITokenService
     {
         private readonly SymmetricSecurityKey _key;

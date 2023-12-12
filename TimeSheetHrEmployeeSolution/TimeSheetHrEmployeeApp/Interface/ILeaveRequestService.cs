@@ -6,6 +6,8 @@ namespace TimeSheetHrEmployeeApp.Interface
     {
         bool AddLeave(LeaveRequest leaverequest);
 
-        IList<LeaveRequest> GetAllLeaves(string username);
+        public IList<LeaveRequest> GetAllLeaves(string username);
+        IList<LeaveRequest> GetLeaves();
+
     }
 }

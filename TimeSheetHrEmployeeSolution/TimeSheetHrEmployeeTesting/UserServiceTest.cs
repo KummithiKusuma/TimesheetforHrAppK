@@ -45,7 +45,7 @@ namespace TimeSheetHrEmployeeTesting
             //Action
             var resulut = userService.Login(new UserDTO { Username = "Hemanth@gmail.com", Password = "Hemanth123", Role = "Employee" });
             //Assert
-            Assert.AreEqual("Hemanth@gmail.com", resulut.Username);
+            Assert.That(resulut.Username, Is.EqualTo("Hemanth@gmail.com"));
         }
     }
 }

@@ -55,9 +55,5 @@ namespace TimeSheetHrEmployeeTesting
             // Act and Assert
             Assert.Throws<NoTimeSheetAvaliableException>(() => timeSheetService.GetAllTimeSheets(username));
         }
-
-
-
-
     }
 }

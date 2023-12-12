@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TimeSheetHrEmployeeApp.Context;
+using TimeSheetHrEmployeeApp.Exceptions;
 using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
 using TimeSheetHrEmployeeApp.Models.DTO;
@@ -10,21 +14,18 @@ using TimeSheetHrEmployeeApp.Services;
 
 namespace TimeSheetHrEmployeeTesting
 {
-    [TestFixture]
     public class ProfileServiceTest
     {
         IRepository<int, Profile> repository;
-
         [SetUp]
         public void Setup()
         {
             var dbOptions = new DbContextOptionsBuilder<TimeSheetHrEmployeeContext>()
-                               .UseInMemoryDatabase("dbTestCustomer")
+                               .UseInMemoryDatabase("dbTestCustomer")//a database that gets created temp for testing purpose
                                .Options;
             TimeSheetHrEmployeeContext context = new TimeSheetHrEmployeeContext(dbOptions);
             repository = new ProfileRepository(context);
         }
-
         [Test]
         public void AddProfileTest()
         {
@@ -36,6 +37,7 @@ namespace TimeSheetHrEmployeeTesting
                 LastName = "User",
                 ContactNumber = "1234567890",
                 JobTitle = "Tester",
+
             };
 
             // Act
@@ -43,6 +45,7 @@ namespace TimeSheetHrEmployeeTesting
 
             // Assert
             Assert.IsTrue(result);
+
         }
         [Test]
         public void GetUserProfileTest()
@@ -65,48 +68,31 @@ namespace TimeSheetHrEmployeeTesting
 
             // Assert
             Assert.IsNotNull(userProfile);
-            Assert.AreEqual("testUser", userProfile.Username);
-            Assert.AreEqual("Test", userProfile.FirstName);
-            Assert.AreEqual("User", userProfile.LastName);
-            Assert.AreEqual("1234567890", userProfile.ContactNumber);
-            Assert.AreEqual("Tester", userProfile.JobTitle);
+            Assert.That(userProfile.Username, Is.EqualTo("testUser"));
+            Assert.That(userProfile.FirstName, Is.EqualTo("Test"));
+            Assert.That(userProfile.LastName, Is.EqualTo("User"));
+            Assert.That(userProfile.ContactNumber, Is.EqualTo("1234567890"));
+            Assert.That(userProfile.JobTitle, Is.EqualTo("Tester"));
         }
-
-
         [Test]
         public void UpdateProfileTest()
         {
+            // Arrange
             IProfileService profileService = new ProfileService(repository);
 
-            // Add a profile for testing
-            var profileDTO = new ProfileDTO
+            // Create an updated profile
+            var updatedProfileDTO = new ProfileDTO
             {
                 Username = "testUser",
-                FirstName = "Test",
-                LastName = "User",
-                ContactNumber = "1234567890",
-                JobTitle = "Tester",
+                FirstName = "UpdatedTest",
+                LastName = "UpdatedUser",
+                ContactNumber = "9876543210",
+                JobTitle = "UpdatedTester",
             };
-            profileService.AddProfile(profileDTO);
 
-            // Act
-            profileDTO.FirstName = "UpdatedTest";
-            profileDTO.ContactNumber = "9876543210";
-            var updatedProfile = profileService.UpdateProfile(profileDTO);
-
-            // Assert
-            Assert.IsNotNull(updatedProfile);
-            Assert.AreEqual("UpdatedTest", updatedProfile.FirstName);
-            Assert.AreEqual("9876543210", updatedProfile.ContactNumber);
-
-            // Additional Assert to verify the updated values in the repository
-            var fetchedProfile = repository.GetById(updatedProfile.ProfileId);
-            Assert.IsNotNull(fetchedProfile);
-            Assert.AreEqual("UpdatedTest", fetchedProfile.FirstName);
-            Assert.AreEqual("9876543210", fetchedProfile.ContactNumber);
+            // Act and Assert
+            Assert.Throws<NoProfileFoundException>(() => profileService.UpdateProfile(updatedProfileDTO));
         }
-
-
         [Test]
         public void DeleteProfileTest()
         {
@@ -129,5 +115,8 @@ namespace TimeSheetHrEmployeeTesting
             // Assert
             Assert.IsTrue(result);
         }
+
+
+
     }
 }

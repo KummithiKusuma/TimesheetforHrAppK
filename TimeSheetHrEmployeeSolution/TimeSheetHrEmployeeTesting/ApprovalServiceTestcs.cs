@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TimeSheetHrEmployeeApp.Context;
 using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
@@ -10,33 +12,30 @@ using TimeSheetHrEmployeeApp.Services;
 
 namespace TimeSheetHrEmployeeTesting
 {
-    [TestFixture]
     public class ApprovalServiceTest
     {
         IRepository<int, Approval> repository;
-
         [SetUp]
         public void Setup()
         {
             var dbOptions = new DbContextOptionsBuilder<TimeSheetHrEmployeeContext>()
-                               .UseInMemoryDatabase("dbTestCustomer")
+                               .UseInMemoryDatabase("dbTestCustomer")//a database that gets created temp for testing purpose
                                .Options;
             TimeSheetHrEmployeeContext context = new TimeSheetHrEmployeeContext(dbOptions);
             repository = new ApprovalRepository(context);
         }
-
         [Test]
-        public void AddApprovalTest()
+        public void AddApproval()
         {
             IApprovalService approvalService = new ApprovalService(repository);
-            var approval = new Approval
+            var Approval = new Approval
             {
                 Approvedby = "jhon",
                 AprrovedDate = DateTime.Now.AddDays(1),
                 Status = "Approved",
                 Comment = "No"
             };
-            var result = approvalService.AddApproval(approval);
+            var result = approvalService.AddApproval(Approval);
 
             // Assert
             Assert.IsTrue(result);
@@ -53,7 +52,7 @@ namespace TimeSheetHrEmployeeTesting
                 AprrovedDate = DateTime.Now.AddDays(1),
                 Status = "Approved",
                 Comment = "No",
-                TimesheetID = 1 // Assigning a TimesheetID for testing
+                TimesheetID = 1
             };
             var approval2 = new Approval
             {
@@ -61,13 +60,13 @@ namespace TimeSheetHrEmployeeTesting
                 AprrovedDate = DateTime.Now.AddDays(2),
                 Status = "Pending",
                 Comment = "Yes",
-                TimesheetID = 1 // Assigning a TimesheetID for testing
+                TimesheetID = 1
             };
             approvalService.AddApproval(approval1);
             approvalService.AddApproval(approval2);
 
             // Act
-            var approvals = approvalService.GetAllApprovals(1); // Assuming TimesheetID is 1
+            var approvals = approvalService.GetAllApprovals(1);
 
             // Assert
             Assert.IsNotNull(approvals);
@@ -77,6 +76,5 @@ namespace TimeSheetHrEmployeeTesting
             Assert.That(approvals[0].Status, Is.EqualTo("Approved"));
             Assert.That(approvals[1].Status, Is.EqualTo("Pending"));
         }
-
     }
 }

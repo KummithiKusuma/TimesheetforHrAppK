@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Build.Framework;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeSheetHrEmployeeApp.Context;
+using TimeSheetHrEmployeeApp.Exceptions;
 using TimeSheetHrEmployeeApp.Interface;
 using TimeSheetHrEmployeeApp.Models;
 using TimeSheetHrEmployeeApp.Models.DTO;
@@ -42,7 +44,6 @@ namespace TimeSheetHrEmployeeTesting
             // Assert
             Assert.IsTrue(result);
         }
-
         [Test]
         public void GetAllLeaves()
         {
@@ -74,11 +75,25 @@ namespace TimeSheetHrEmployeeTesting
 
             // Assert
             Assert.IsNotNull(leaveRequests);
-            Assert.AreEqual(2, leaveRequests.Count);
+            Assert.That(leaveRequests.Count, Is.EqualTo(2));
 
             // Use NUnit constraints for better readability
             Assert.That(leaveRequests, Has.Exactly(1).Property(nameof(LeaveRequest.Status)).EqualTo("pending"));
             Assert.That(leaveRequests, Has.Exactly(1).Property(nameof(LeaveRequest.Status)).EqualTo("approved"));
+        }
+        [Test]
+        public void GetLeavesTest()
+        {
+            ILeaveRequestService leaverequestService = new LeaveRequestService(repository);
+
+            // Use Assert.Throws to check if the expected exception is thrown
+            var exception = Assert.Throws<NoLeaveRequestAvailableException>(() =>
+            {
+                var leaves = leaverequestService.GetLeaves();
+            });
+
+            Assert.IsNotNull(exception);
+            Assert.That(exception.Message, Is.EqualTo("No leave requests available"));
         }
 
 
